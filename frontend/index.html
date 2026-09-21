@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dept E — Enchanted Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="petal-layer" aria-hidden="true">
+    <span class="petal p1">✿</span><span class="petal p2">❀</span>
+    <span class="petal p3">✾</span><span class="petal p4">✿</span>
+    <span class="petal p5">❋</span><span class="petal p6">✿</span>
+    <span class="petal p7">❀</span><span class="petal p8">✾</span>
+  </div>
+
+  <!-- SCREEN 1 — Enter URL -->
+  <section id="step-input" class="screen active">
+    <div class="orb orb-1"></div><div class="orb orb-2"></div>
+    <header class="brand">
+      <div class="brand-emblem">✦</div>
+      <h1 class="brand-name">Dept <em>E</em></h1>
+      <p class="brand-tagline">Enchanted digital intelligence</p>
+    </header>
+    <div class="card input-card">
+      <div class="card-deco top-left">❧</div><div class="card-deco top-right">❧</div>
+      <p class="card-eyebrow">Step 1 of 4</p>
+      <h2 class="card-title">Enter a website to analyse</h2>
+      <p class="card-sub">We'll scrape the site and build a custom Grok prompt for your chosen reports.</p>
+      <div class="input-row">
+        <input type="url" id="website-url" class="url-input" placeholder="https://example.com" autocomplete="off" spellcheck="false" />
+        <button id="btn-analyse" class="btn-primary" onclick="startAnalysis()">
+          <span class="btn-icon">✦</span> Next
+        </button>
+      </div>
+      <div id="input-error" class="error-msg hidden"></div>
+    </div>
+  </section>
+
+  <!-- SCREEN 2 — Pick reports -->
+  <section id="step-select" class="screen">
+    <div class="orb orb-1"></div><div class="orb orb-3"></div>
+    <header class="brand">
+      <div class="brand-emblem">✦</div>
+      <h1 class="brand-name">Dept <em>E</em></h1>
+    </header>
+    <div class="card select-card">
+      <div class="card-deco top-left">❧</div><div class="card-deco top-right">❧</div>
+      <p class="card-eyebrow">Step 2 of 4</p>
+      <h2 class="card-title">Which reports do you want?</h2>
+      <p class="card-sub">Select the reports you need — we'll generate a Grok prompt for exactly these.</p>
+      <div class="report-grid" id="report-grid"></div>
+      <div class="select-actions">
+        <button class="btn-ghost" onclick="selectAll()">Select all</button>
+        <button class="btn-ghost" onclick="selectNone()">Clear</button>
+        <button class="btn-primary" id="btn-generate" onclick="generatePrompt()">
+          <span class="btn-icon">✦</span> Generate Grok prompt
+        </button>
+      </div>
+      <div id="step2-loading" class="loading-state hidden">
+        <div class="fairy-spinner"><span>✿</span><span>❀</span><span>✾</span></div>
+        <p class="loading-text" id="step2-loading-text">Scraping website & building your prompt…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3 — Show Grok prompt -->
+  <section id="step-prompt" class="screen">
+    <div class="orb orb-1"></div><div class="orb orb-3"></div>
+    <header class="brand">
+      <div class="brand-emblem">✦</div>
+      <h1 class="brand-name">Dept <em>E</em></h1>
+    </header>
+    <div class="card prompt-card">
+      <div class="card-deco top-left">❧</div><div class="card-deco top-right">❧</div>
+      <p class="card-eyebrow">Step 3 of 4</p>
+      <h2 class="card-title">Run this prompt in Grok</h2>
+      <p class="card-sub">Prompt covers: <strong id="prompt-reports-list"></strong></p>
+
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">Your Grok prompt</span>
+          <button class="btn-copy-prompt" onclick="copyPrompt()">Copy prompt</button>
+        </div>
+        <div class="prompt-text" id="grok-prompt-text">Loading…</div>
+      </div>
+
+      <div class="steps-checklist">
+        <div class="step-item"><span class="step-num">1</span><span>Click <strong>Copy prompt</strong> above</span></div>
+        <div class="step-item"><span class="step-num">2</span><span>Open <a href="https://grok.com" target="_blank" class="link">grok.com</a> in a new tab</span></div>
+        <div class="step-item"><span class="step-num">3</span><span>Paste and run the prompt — wait for it to fully finish</span></div>
+        <div class="step-item"><span class="step-num">4</span><span>Grok will save the output files to Google Drive automatically</span></div>
+        <div class="step-item"><span class="step-num">5</span><span>Come back here and click the button below</span></div>
+      </div>
+
+      <div class="prompt-actions">
+        <button class="btn-ghost" onclick="showScreen('step-select')">← Change reports</button>
+        <button class="btn-primary" onclick="grokDone()">
+          <span class="btn-icon">✦</span> I've run Grok — fetch my reports
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 4 — Confirm & fetch -->
+  <section id="step-fetch" class="screen">
+    <div class="orb orb-2"></div><div class="orb orb-3"></div>
+    <header class="brand">
+      <div class="brand-emblem">✦</div>
+      <h1 class="brand-name">Dept <em>E</em></h1>
+    </header>
+    <div class="card fetch-card">
+      <div class="card-deco top-left">❧</div><div class="card-deco top-right">❧</div>
+      <p class="card-eyebrow">Step 4 of 4</p>
+      <h2 class="card-title">Ready to reveal your reports?</h2>
+      <p class="card-sub">We'll fetch the output files Grok saved to Google Drive and display them here.</p>
+
+      <div class="fetch-confirm-box">
+        <span class="fetch-confirm-icon">🔮</span>
+        <p>Make sure Grok has <strong>fully finished</strong> running before fetching — otherwise the Drive files may be incomplete.</p>
+      </div>
+
+      <div class="prompt-actions">
+        <button class="btn-ghost" onclick="showScreen('step-prompt')">← Back to prompt</button>
+        <button class="btn-primary" id="btn-fetch" onclick="fetchReports()">
+          <span class="btn-icon">✦</span> Fetch reports from Drive
+        </button>
+      </div>
+
+      <div id="step4-loading" class="loading-state hidden">
+        <div class="fairy-spinner"><span>✿</span><span>❀</span><span>✾</span></div>
+        <p class="loading-text" id="step4-loading-text">Summoning your reports…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 5 — Results -->
+  <section id="step-results" class="screen">
+    <div class="orb orb-2"></div>
+    <header class="results-header">
+      <div class="brand-emblem small">✦</div>
+      <h1 class="brand-name small">Dept <em>E</em></h1>
+      <button class="btn-ghost small" onclick="goBack()">← Start over</button>
+    </header>
+    <div class="results-layout">
+      <nav class="results-nav" id="results-nav"></nav>
+      <div class="results-content" id="results-content"></div>
+    </div>
+  </section>
+
+  <script src="js/config.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
